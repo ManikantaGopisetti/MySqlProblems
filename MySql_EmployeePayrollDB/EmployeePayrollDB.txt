@@ -1,0 +1,33 @@
+UC-1 :- 
+	-> CREATE DATABASE payroll_service;
+	-> show databases;
+	-> use payroll_service;
+--------------------------------------------------------------------------------------------------------------------------------
+UC-2 :- 
+	-> CREATE TABLE employee_payroll(id int unsigned PRIMARY KEY AUTO_INCREMENT,name varchar(50) NOT NULL,salary double NOT NULL,startDate DATE NOT NULL);
+--------------------------------------------------------------------------------------------------------------------------------
+UC-3 :- 
+	-> INSERT INTO employee_payroll(name,salary,startDate) values ('Mani',10000.0,'2021-12-21'),('uma',20000.0,'2020-09-12'),('Bill',15000.0,'2015-08-12');
+--------------------------------------------------------------------------------------------------------------------------------
+UC-4 :- 
+	-> SELECT * FROM employee_payroll;
+
+--------------------------------------------------------------------------------------------------------------------------------
+UC-5 :- 
+	-> SELECT salary FROM employee_payroll WHERE Name = 'Mani';
+	-> SELECT salary FROM employee_payroll WHERE startDate BETWEEN CAST('2018-01-01' AS DATE) AND DATE(NOW());
+
+--------------------------------------------------------------------------------------------------------------------------------
+UC-6 :- 
+	->  ALTER TABLE employee_payroll ADD gender CHAR(1) NOT NULL AFTER name;
+	->  UPDATE employee_payroll set gender='M' where name='Mani' or name='Bill';
+	->  UPDATE employee_payroll set gender='F' where name='uma';
+--------------------------------------------------------------------------------------------------------------------------------
+UC-7 :- 
+	-> SELECT SUM(salary) FROM employee_payroll WHERE gender = 'M' GROUP BY gender;
+	-> SELECT AVG(salary) FROM employee_payroll GROUP BY gender;
+	-> SELECT MIN(salary) FROM employee_payroll where gender = 'M' GROUP BY gender;
+	-> SELECT MAX(salary) FROM employee_payroll where gender = 'M' GROUP BY gender;
+	-> SELECT gender, COUNT(name) FROM employee_payroll GROUP BY gender;
+	-> SELECT * FROM employee_payroll;
+--------------------------------------------------------------------------------------------------------------------------------
