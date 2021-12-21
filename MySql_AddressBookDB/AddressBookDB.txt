@@ -1,0 +1,31 @@
+UC1:	-> CREATE DATABASE address_book_service;
+	-> USE address_book_service;
+
+UC2: 	-> CREATE TABLE address_book(firstName varchar(30) NOT NULL,lastName varchar(30),address varchar(50),city varchar(30),state varchar(30),zip int,phone_Number int,email varchar(30) NOT NULL);
+
+UC3: 	-> INSERT INTO address_book(firstName,lastName,address,city,state,zip,phone_Number,email) VALUES
+	('Mani', 'Gopisetti', 'India', 'RVPM', 'AP', 533236, 123456789, 'mani@gmail.com'),
+	('Musai', 'Borra', 'India', 'GPM', 'AP', 546456, 897979797, 'musai@gmail.com'),
+	('Gana', 'Kandula', 'US', 'NY', 'NY', 589232, 898997359, 'gana@gmail.com'),
+	('Dhana', 'Gorrela', 'US', 'Canada', 'NY', 589345, 898985659, 'dhana@gmail.com');
+
+UC4: 	-> UPDATE address_book SET state='TEL' WHERE firstName='Musai';
+
+UC5: 	-> DELETE FROM address_book WHERE firstName='Gana';
+
+UC6: 	-> SELECT firstName, lastName FROM address_book WHERE city='GPM' OR state='AP';
+	-> SELECT * FROM address_book WHERE city='GPM' OR state='AP';
+
+UC7: 	-> SELECT COUNT(city) FROM address_book GROUP BY city;
+	-> SELECT COUNT(state) FROM address_book GROUP BY state;
+	-> SELECT COUNT(address) FROM address_book GROUP BY address;
+
+UC8: 	-> SELECT firstName, lastName, city FROM address_book ORDER BY firstName;
+
+UC9: 	-> ALTER TABLE address_book ADD type varchar(30);
+	-> UPDATE address_book SET type='Family' WHERE firstName='Musai';
+	-> UPDATE address_book SET type='Friend' WHERE firstName='Dhana';
+	-> UPDATE address_book SET type='Profession' WHERE firstName='Mani';
+
+UC10: 	-> SELECT COUNT(firstName) FROM address_book WHERE type = 'Friend';
+	-> SELECT COUNT(*) FROM address_book GROUP BY type;
