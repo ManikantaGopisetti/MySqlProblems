@@ -29,3 +29,19 @@ UC9: 	-> ALTER TABLE address_book ADD type varchar(30);
 
 UC10: 	-> SELECT COUNT(firstName) FROM address_book WHERE type = 'Friend';
 	-> SELECT COUNT(*) FROM address_book GROUP BY type;
+
+UC10:
+
+
+
+UC11:	
+	• Entities=addressBook,type
+	• Key attribute – addressBook id,type id     simple values:-firstName,lastName,city,state,zip,email
+	• Composite attribute – address
+	• Multivalued attribute – phoneNumber,
+	• Derived attribute – 
+	• Relationship –
+			                  many<->many
+				addressBook----------type
+					   	
+
