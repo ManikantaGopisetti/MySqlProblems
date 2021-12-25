@@ -39,7 +39,7 @@ UC-8 :-
 
 --------------------------------------------------------------------------------------------------------------------------------
 UC-9 :- 
-	-> ALTER TABLE employee_payroll RENAME salary to basicPay;
+	-> ALTER TABLE employee_payroll RENAME column salary to basicPay;
 	-> ALTER TABLE employee_payroll ADD deductions double NOT NULL AFTER basicPay;
 	-> ALTER TABLE employee_payroll ADD taxablePay double NOT NULL AFTER deductions;
 	-> ALTER TABLE employee_payroll ADD incomeTax double NOT NULL AFTER taxablePay;
@@ -51,6 +51,7 @@ UC-9 :-
 	   ('Terrisa','F','Sales',10000.0,'2000.0','8000.0','1000.0','7000.0','2021-12-21');
 	-> INSERT INTO employee_payroll(name,gender,department,basicPay,deductions,taxablePay,incomeTax,netPay,startDate) values 
 	   ('Terrisa','F','Marketing',10000.0,'2000.0','8000.0','1000.0','7000.0','2021-12-21');
+
 
 --------------------------------------------------------------------------------------------------------------------------------
 UC-10 :-
@@ -69,3 +70,41 @@ UC-10 :-
 
 --------------------------------------------------------------------------------------------------------------------------------
 UC-11 :-	
+	-> CREATE TABLE payroll_details(
+  		employee_id  INT UNSIGNED NOT NULL,
+  		basicPay     Double NOT NULL,
+  		deductions   Double NOT NULL,
+  		taxablepay   Double NOT NULL,
+  		incomeTax    Double NOT NULL,
+  		netPay       Double NOT NULL,
+  		FOREIGN KEY (employee_id)
+  		REFERENCES employee_payroll (id)
+      		ON DELETE CASCADE);
+
+	-> CREATE TABLE department(department_id int PRIMARY KEY,departmentName varchar(30) NOT NULL);
+	-> INSERT INTO department(department_id,departmentName) values (1,'Sales'),(2, 'Marketing');
+
+	-> CREATE TABLE employee_department(
+		  emp_id int UNSIGNED NOT NULL,dept_id int,
+  		  CONSTRAINT emp_dept_pk PRIMARY KEY (emp_id, dept_id),
+  		  CONSTRAINT FK_employee FOREIGN KEY (emp_id) REFERENCES employee_payroll (id),
+ 		  CONSTRAINT FK_department FOREIGN KEY (dept_id) REFERENCES department (department_id));
+	-> INSERT INTO employee_department(emp_id,dept_id) values (1,2),(2,1),(3,1),(1,1),(3,2);
+	
+	-> ALTER TABLE employee_payroll DROP COLUMN department;
+	-> ALTER TABLE employee_payroll DROP COLUMN basicPay;
+	-> ALTER TABLE employee_payroll DROP COLUMN deductions;
+	-> ALTER TABLE employee_payroll DROP COLUMN taxablePay;
+	-> ALTER TABLE employee_payroll DROP COLUMN incomeTax;
+	-> ALTER TABLE employee_payroll DROP COLUMN netPay;
+
+	-> DELETE FROM employee_payroll WHERE id=5 
+
+	-> INSERT INTO payroll_details(employee_id,basicPay,deductions,taxablepay,incomeTax,netPay) values 
+	   (1,10000.0,'2000.0','8000.0','1000.0','7000.0'),(2,20000.0,'3000.0','17000.0','1500.0','15500.0'),
+	   (2,30000.0,'4000.0','26000.0','2000.0','24000.0'),(10000.0,'2000.0','8000.0','1000.0','7000.0');
+
+--------------------------------------------------------------------------------------------------------------------------------
+UC-12 :-
+
+
