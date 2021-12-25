@@ -89,7 +89,7 @@ UC-11 :-
   		  CONSTRAINT emp_dept_pk PRIMARY KEY (emp_id, dept_id),
   		  CONSTRAINT FK_employee FOREIGN KEY (emp_id) REFERENCES employee_payroll (id),
  		  CONSTRAINT FK_department FOREIGN KEY (dept_id) REFERENCES department (department_id));
-	-> INSERT INTO employee_department(emp_id,dept_id) values (1,2),(2,1),(3,1),(1,1),(3,2);
+	-> INSERT INTO employee_department(emp_id,dept_id) values (4,1),(4,2);
 	
 	-> ALTER TABLE employee_payroll DROP COLUMN department;
 	-> ALTER TABLE employee_payroll DROP COLUMN basicPay;
