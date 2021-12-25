@@ -1,7 +1,8 @@
 UC1:	-> CREATE DATABASE address_book_service;
 	-> USE address_book_service;
 
-UC2: 	-> CREATE TABLE address_book(firstName varchar(30) NOT NULL,lastName varchar(30),address varchar(50),city varchar(30),state varchar(30),zip int,phone_Number int,email varchar(30) NOT NULL);
+UC2: 	-> CREATE TABLE address_book(id int unsigned PRIMARY KEY AUTO_INCREMENT,firstName varchar(30) NOT NULL,lastName varchar(30),
+		address varchar(50),city varchar(30),state varchar(30),zip int,phone_Number int,email varchar(30) NOT NULL);
 
 UC3: 	-> INSERT INTO address_book(firstName,lastName,address,city,state,zip,phone_Number,email) VALUES
 	('Mani', 'Gopisetti', 'India', 'RVPM', 'AP', 533236, 123456789, 'mani@gmail.com'),
@@ -20,7 +21,7 @@ UC7: 	-> SELECT COUNT(city) FROM address_book GROUP BY city;
 	-> SELECT COUNT(state) FROM address_book GROUP BY state;
 	-> SELECT COUNT(address) FROM address_book GROUP BY address;
 
-UC8: 	-> SELECT firstName, lastName, city FROM address_book ORDER BY firstName;
+UC8: 	-> SELECT firstName, lastName, city FROM address_book WHERE city='GPM' ORDER BY city;
 
 UC9: 	-> ALTER TABLE address_book ADD type varchar(30);
 	-> UPDATE address_book SET type='Family' WHERE firstName='Musai';
@@ -30,18 +31,57 @@ UC9: 	-> ALTER TABLE address_book ADD type varchar(30);
 UC10: 	-> SELECT COUNT(firstName) FROM address_book WHERE type = 'Friend';
 	-> SELECT COUNT(*) FROM address_book GROUP BY type;
 
-UC10:
+UC11:
+	-> INSERT INTO address_book(firstName,lastName,address,city,state,zip,phone_Number,email,type) VALUES
+	   ('Musai', 'Borra', 'India', 'GPM', 'AP', 546456, 897979797, 'musai@gmail.com','Friend');
 
-
-
-UC11:	
-	• Entities=addressBook,type
+UC12:	
+	• Entities=addressBook,type,addressZip
 	• Key attribute – addressBook id,type id     simple values:-firstName,lastName,city,state,zip,email
 	• Composite attribute – address
 	• Multivalued attribute – phoneNumber,
-	• Derived attribute – 
 	• Relationship –
-			                  many<->many
-				addressBook----------type
+			                  one<->one		many<->many
+				addressZip--------addressBook----------type
 					   	
+	-> CREATE TABLE type(int type_id PRIMARY KEY,typeName varchar(50) NOT NULL);
+	-> INSERT INTO type(type_id,typeName) values(1,'Family'),(2,'Friend'),(3,'Profession');
 
+	-> CREATE TABLE addressZip AS (SELECT id,address,city,state,zip FROM address_book);	
+	-> ALTER TABLE address_book DROP address, DROP city, DROP state, DROP zip;
+
+	-> CREATE TABLE address_type(
+		  address_id int UNSIGNED NOT NULL,type_id int,
+  		  CONSTRAINT address_type_pk PRIMARY KEY (address_id, type_id),
+  		  CONSTRAINT FK_address FOREIGN KEY (address_id) REFERENCES address_book (id),
+ 		  CONSTRAINT FK_type FOREIGN KEY (type_id) REFERENCES type (type_id));
+	-> INSERT INTO address_type(address_id,type_id) values (1,3),(2,1),(4,2),(2,2);
+
+	-> DELETE FROM address_book WHERE id=5;
+	-> ALTER TABLE address_book DROP COLUMN type;
+	
+	-> SELECT ad.id,ad.firstName,ad.lastName,az.address,az.city,az.state,az.zip,ad.phone_Number,ad.email,t.typeName FROM address_book ad
+		LEFT JOIN addressZip az ON ad.id = az.id
+     		LEFT outer JOIN address_type at ON ad.id=at.address_id
+     		LEFT outer JOIN type t ON at.type_id=t.type_id;
+
+UC13:
+	Ensuring UC6:
+	-> SELECT ad.firstName,ad.lastName FROM address_book ad LEFT JOIN addressZip az ON ad.id = az.id WHERE city='GPM' OR state='AP';
+	-> SELECT * FROM address_book ad LEFT JOIN addressZip az ON ad.id = az.id WHERE city='GPM' OR state='AP';
+	
+	Ensuring UC7:
+	-> SELECT COUNT(city) FROM address_book ad LEFT JOIN addressZip az ON ad.id = az.id GROUP BY city;
+	-> SELECT COUNT(state) FROM address_book ad LEFT JOIN addressZip az ON ad.id = az.id GROUP BY state;
+	-> SELECT COUNT(address) FROM address_book ad LEFT JOIN addressZip az ON ad.id = az.id GROUP BY address;
+	
+	Ensuring UC8:
+	SELECT ad.id,firstName,lastName,address,city,state,zip,phone_Number,email,typeName FROM address_book ad
+		LEFT JOIN addressZip az ON ad.id = az.id
+     		LEFT outer JOIN address_type at ON ad.id=at.address_id
+     		LEFT outer JOIN type t ON at.type_id=t.type_id WHERE city='GPM' ORDER BY firstName;
+
+	Ensuring UC10:
+	SELECT COUNT(*) FROM address_book ad
+     		LEFT outer JOIN address_type at ON ad.id=at.address_id
+     		LEFT outer JOIN type t ON at.type_id=t.type_id GROUP BY typeName;
